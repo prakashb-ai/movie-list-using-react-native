@@ -51,13 +51,23 @@ const MovieList = () => {
 
     if (text === '') {
       setPage(1);
-      fetchMovies();
+      fetchMovies(); 
       return;
     }
-
+  
     const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(text.toLowerCase()));
     setMovies(filteredMovies);
   };
+
+  const renderMovieItem = ({ item }) => (
+    <View style={styles.movieItem}>
+      <Image
+        style={styles.posterImage}
+        source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
+      />
+      <Text>{item.title}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -71,21 +81,12 @@ const MovieList = () => {
       />
       <FlatList
         data={movies}
-        renderItem={({ item, index }) => (
-          <View style={styles.movieItem}>
-            <Image
-              style={styles.posterImage}
-              source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
-            />
-            <Text>{item.title}</Text>
-          </View>
-        )}
-        keyExtractor={(item, index) => `${item.id}_${index}`}
+        renderItem={renderMovieItem}
+        keyExtractor={item => item.id.toString()}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={() => loading && <ActivityIndicator style={styles.loadingIndicator} size="large" />}
       />
-
     </View>
   );
 };
